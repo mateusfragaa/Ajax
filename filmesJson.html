@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Filmes de Json</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="src/xmltojson.js"></script> <!-- Arquivo que contêm a função resposável por converter o xml em json -->
+    <script>
+        function getFilmes(){
+            let ajax = new XMLHttpRequest();
+
+            ajax.open('get', 'http://localhost/Ajax/conteudos/filmes.json');
+
+            ajax.onreadystatechange = () =>{
+                
+                if(ajax.readyState == 4 && ajax.status == 200){
+                    let filmes = ajax.response; // Filmes no formato json(strings)
+                    let JSONfilmes = JSON.parse(filmes); // Filmes no formato json(árvore de elementos)
+                    
+                    let divFilmes = '';
+                    let item = JSONfilmes['filmes'];
+
+                    for (var i in item) {
+                        
+                        let genero = '';
+                        for(var g in item[i]['generos']){
+                            if(genero) genero += ', ';
+                            genero += item[i]['generos'][g]['genero'];
+                        }
+
+                        let elenco = '';
+                        for(var e in item[i]['elenco']){
+                            if (elenco) elenco += ', ';
+                            elenco += item[i]['elenco'][e]['ator'];
+                        }
+
+                        divFilmes += `
+                                    <div class='bg-success p-3 rounded text-light'>
+                                        <p><strong>Título : </strong> ${item[i]['titulo']}</p>
+                                        <p><strong>Resumo : </strong> ${item[i]['resumo']}</p>
+                                        <p><strong>Gênero : </strong> ${genero}</p>
+                                        <p><strong>Elenco : </strong> ${elenco}</p>
+                                        <p><strong>Data Lançamento : </strong> ${item[i]['dataLancamento']['data']} (${item[i]['dataLancamento']['pais']})</p>
+                                    </div>
+                                    <hr>
+                        `;
+
+                    }
+                    document.getElementById('filmes').innerHTML = divFilmes;
+                
+                }   
+            }
+
+            ajax.send();
+        }
+
+    </script>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark bg-info ">
+        <div class="container">
+            <div class="navbar-brand">
+                <h3>Informações de filmes</h3>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <button class="btn btn-success btn-block w-25 m-auto" onclick="getFilmes()">Buscar</button>
+
+        <div class="mt-5" id="filmes">
+            
+        </div>
+    </div>
+
+</body>

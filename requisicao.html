@@ -1,0 +1,98 @@
+<!DOCTYPE HTML>
+<!-- 
+	Esse arquivo faz requisições a outros arquivos que possuem o conteúdo atravéz do Ajax(XMLHttpRequest)
+	-- Estados de uma requisição:
+	- 0 : Requisição não inicializada;
+	- 1 : Conexão estabelecida com o servidor;
+	- 2 : Requisição recebida no servidor;
+	- 3 : Processamento da requisição;
+	- 4 : Requisição finalizada;
+ -->
+<html lang="pt-br">
+	<head>
+		<meta charset="UTF-8">
+
+		<title>Página 1</title>
+		
+		<!-- bootstrap - link cdn -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+		<script>
+
+		
+		function requisitarpagina(url){
+
+			if (!document.getElementById('gif')) {
+				// Bloco de código para add um gif de carregamento
+				let img = document.createElement('img');
+				img.src = 'src/loading.gif';
+				img.className = 'rounded d-block mx-auto';
+				img.id = 'gif';
+				document.getElementById('centro_conteudos').appendChild(img);
+			}
+
+
+			let ajax = new XMLHttpRequest(); // Objeto que contêm o Ajax
+			
+			ajax.open('get', url); // Abre uma url para requisição passando como parãmetro o method e a url a ser requisitada
+
+			ajax.onreadystatechange = () =>{ // Método ouvinte na mudança de estado da requisição, disparada em toda mudança de estado
+			// Status possíveis - 0, 1, 2, 3, 4
+				if (ajax.readyState == 4 && ajax.status == 200){
+					document.getElementById('gif').remove();
+					document.getElementById('centro_conteudos').innerHTML = ajax.response; // O response armazena a resposta da requisição
+				}
+			}	
+
+			ajax.send(); // Envia e executa a requisição
+
+			console.log(ajax);
+
+
+		}
+			
+
+		</script>
+	
+	</head>
+
+	<body>
+
+		<!-- Static navbar -->
+	    <nav class="navbar navbar-light bg-light mb-4">
+	      <div class="container">
+	        <div class="navbar-brand mb-0 h1">
+	        	<h3>Requisições síncronas e assíncronas</h3>
+	        </div>
+	      </div>
+	    </nav>
+
+
+	    <div class="container">
+
+	    	<div class="row mb-2">
+	    		<div class="col-md-4 center"></div>
+	    		<div class="col-md-4 center">
+	    			<a href="#" class="btn btn-primary" onclick="requisitarpagina('conteudos/pagina_1_conteudo.php')">Página 1</a>
+	    			<a href="#" class="btn btn-primary" onclick="requisitarpagina('conteudos/pagina_2_conteudo.html')">Página 2</a>
+	    			<a href="#" class="btn btn-primary" onclick="requisitarpagina('conteudos/pagina_3_conteudo.html')">Página 3</a>
+	    		</div>
+	    		<div class="col-md-4 center"></div>
+	    	</div>
+	    	
+	    	<div class="row">
+		    	<div class="col-md-1"></div>
+
+		    	<!-- Dentro dessa div ficará todo o conteúdo das requisições -->
+		    	<div class="col-md-10" id="centro_conteudos"> 
+		    		
+
+
+		    	</div>
+		    		
+				<div class="col-md-1"></div>
+			</div>
+
+		</div>	
+	</body>
+</html>
